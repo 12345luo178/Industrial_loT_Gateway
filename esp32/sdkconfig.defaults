@@ -1,0 +1,19 @@
+# ============================================================================
+#  gateway_bridge 默认配置（idf.py build 时自动套用；menuconfig 可覆盖）
+# ============================================================================
+
+# 目标芯片：ESP32（经典款，与 STM32 走 USART3 直连的那块模组）
+CONFIG_IDF_TARGET="esp32"
+
+# ---- 串口日志（与调试习惯一致：115200 8N1）----
+CONFIG_ESP_CONSOLE_UART_DEFAULT=y
+CONFIG_ESP_CONSOLE_UART_BAUDRATE=115200
+# 烧录后 monitor 里看 INFO 级即可；排障时改回 DEBUG
+CONFIG_LOG_DEFAULT_LEVEL_INFO=y
+
+# ---- FreeRTOS ----
+# 主任务栈：app_main 只做初始化，默认 3584 偏紧，放宽一档
+CONFIG_ESP_MAIN_TASK_STACK_SIZE=4096
+
+# ---- lwIP / MQTT 相关保持默认 ----
+# MQTT KeepAlive 60s 在 main.c 的 mcfg.session.keepalive 里设，不动全局配置。

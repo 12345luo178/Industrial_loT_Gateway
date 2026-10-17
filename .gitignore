@@ -1,0 +1,54 @@
+# ============================================================
+# 工业物联网网关 - 根级忽略规则（与 stm32/.gitignore 互补）
+# 只忽略备份、编译/烧录产物与本地凭据，源码/脚本/文档全部保留
+# ============================================================
+
+# ---- 手工备份 / 历史版本（不入库，避免无意义 diff）----
+*.bak
+*.prev
+*.before_*
+*.cubemx.bak
+
+# ---- 编译与链接产物（可重新生成）----
+*.o
+*.obj
+*.elf
+*.hex
+*.map
+*.bin
+*.exe
+*.dll
+*.lib
+*.a
+
+# ---- 构建输出目录 ----
+build/
+Debug/
+Release/
+cmake-build-*/
+managed_components/
+managed_libraries/
+
+# ---- Python 字节码与缓存 ----
+__pycache__/
+*.pyc
+*.pyo
+
+# ---- 本地凭据（真实值只留本机，模板 .example 入库）----
+secrets/*
+!secrets/*.example
+
+# ---- 临时/工作目录 ----
+scratch/
+preview*/
+pv*/
+
+# ---- 编辑器/IDE ----
+.vscode/
+.idea/
+*.swp
+*~
+
+# ---- 针对备份/旧工程文件的校验清单（引用对象已忽略，不入库）----
+/SHA256SUMS.txt
+stm32/tools/cubemx_manifest_before.txt

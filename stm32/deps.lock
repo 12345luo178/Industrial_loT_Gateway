@@ -1,0 +1,45 @@
+# 外部依赖锁定清单（deps.lock）
+#
+# 为什么需要它
+# ============
+#   本仓库**刻意不 vendoring** 第三方源码：LVGL 与 FreeRTOS 都以"外部路径"的形式
+#   参与构建（build_ota_images.ps1 的 -LvglDir / -Freertos）。
+#   代价是"干净克隆缺依赖"，所以必须有一份**钉死的版本清单**，
+#   否则同一天在两台机器上会构建出不同的镜像 —— 冻结基线的 SHA256 就失去意义。
+#
+#   本文件由 tools/fetch_deps.ps1 --update-hashes 生成/刷新，
+#   由 tools/check_deps.py 校验（已接入 tools/ci.ps1）。
+#
+# 字段
+# ====
+#   url_zip   官方发布包地址（离线时可用 -CacheDir 复用已下载的包）
+#   sha256    发布包（zip）的 SHA256
+#   dest      本机默认落盘位置（可被 -LvglDir 之类的参数覆盖）
+#   keep      从包里**只保留**这些路径（省空间；其余解压后丢弃）
+#   src_sha256 精简后源码树的聚合 SHA256（逐文件哈希，按相对路径排序）
+#               —— 判"构建用的那份源码有没有被人改过"
+#
+# ⚠️ 已知的机器相关性
+# ==================
+#   FreeRTOS 没有独立的发布包：本项目的 FreeRTOS 源码来自 CubeMX 工程
+#   （Middlewares/Third_Party/FreeRTOS/Source），由 CubeMX 配置生成，
+#   清单见 doc/CubeMX配置清单.md。所以这里记录的是**来源说明**，
+#   而不是可下载的 zip —— 这是设计选择，不是遗漏。
+
+[lvgl]
+version     = v8.2.0
+url_zip     = https://github.com/lvgl/lvgl/releases/download/v8.2.0/lvgl-release-v8.2.zip
+sha256      = aae3741a9a7db44ca3e17d4663b2eb6013daf5ef71594cc5c767977f6e15562a
+dest        = D:\lvgl\lvgl-release-v8.2
+keep        = lvgl.h src/
+src_sha256  = e74fbb104aacc77dd40f79888a3b42ed15c801923fa629618c5d46104d0c1b7f
+note        = 冻结基线（72h 浸泡）用的就是这个版本；升 minor 会改 API，已踩过缺陷 AQ
+
+[freertos]
+version     = CubeMX 生成（非独立发布包）
+url_zip     =
+sha256      =
+dest        = D:\stm32cubeIDE\gateway2\Middlewares\Third_Party\FreeRTOS\Source
+keep        =
+src_sha256  = N/A
+note        = 由 CubeMX 生成，配置见 doc/CubeMX配置清单.md；无法也不应 vendoring（它属于 CubeMX 工程的一部分）

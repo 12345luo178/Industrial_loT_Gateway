@@ -1,0 +1,46 @@
+# 编译产物
+*.o
+*.exe
+*.elf
+*.bin
+*.hex
+*.map
+
+# 编辑器
+.vscode/
+*.swp
+*~
+
+# 文档渲染预览（临时产物）
+preview*/
+pv*/
+*.pdf
+
+# 生成物：tools/merge_l0_main.py 的输出
+# （可随时重新生成，入库只会在每次改模板后产生无意义的 diff）
+tools/_merged_main_preview.c
+
+# 构建产物目录（tools/build_ota_images.ps1 的产出；*.o 之类挡不住生成的 *_system.c）
+build/
+
+# 浸泡/巡检 CSV（运行产物，不是交付物）
+# 2026-10-16 定案：soak_akfix_2026-10-14.csv 原本散在仓库根目录，
+# 与 build/ 下已有的 soak_*.csv 处置方式不一致。现统一挪到 build\archive\，
+# 由上面那条 build/ 规则覆盖；根目录不再接受任何 soak CSV。
+# 判据：结论沉淀进 doc\（如 doc\上板调试交接.md），数据本身留在 build\archive\。
+soak_*.csv
+
+# Python 字节码（构建产物：与 Python 版本绑定，不该入库）
+__pycache__/
+*.pyc
+
+# 临时工作目录（补丁脚本、构建日志、RAM dump、备份、提交信息草稿等）
+# 这些都是"过程中的东西"，不是交付物 —— 入库只会让 diff 变脏
+scratch/
+
+# 本地凭据（Wi-Fi 密码、OneNET token / 访问密钥）
+# 模板 secrets/onenet.env.example 入库，真实值只留本地。
+# 注意用 secrets/* 而不是 secrets/ —— 后者会把目录本身排除掉，
+# 后面的 ! 例外规则就失效了（git 不会进到被排除的目录里找例外）。
+secrets/*
+!secrets/*.example
